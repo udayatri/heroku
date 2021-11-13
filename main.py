@@ -6,13 +6,14 @@ import smtplib
 import imghdr
 import json
 import time
-from helo import whattsappTakeover,firstMsg
+from helo import whattsappTakeover,firstMsg,intialGreetingProcess
 
 
 app = Flask(__name__) #create a flask object
 
 @app.route('/')
 def index():
+  intialGreetingProcess()
   whattsappTakeover()
   now = datetime.now()
   current_time = now.strftime("%H:%M:%S")
