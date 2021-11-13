@@ -6,12 +6,25 @@ import smtplib
 import imghdr
 import json
 import time
-
+import yaml
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+import pandas as pd
+from email.message import EmailMessage
 
   
 
 
-
+def updateCells(spreadsheet,row,col, val):
+    
+    if val=='':
+        return
+    
+    print(val)
+    
+    spreadsheet.update_cell(row , col , val)
+    time.sleep(1)
+    return 
 
 
 
@@ -45,7 +58,7 @@ def whattsappTakeover():
 
 
 
-def firstMsg(name,number,number1):
+def firstMsg1(name,number,number1):
     url = "https://api.chat-api.com/instance294124/sendMessage?token=bfllgpii7xqb42zq"
 
     payload="{\r\n  \"body\": \"Hi " + str(name.title()) + " " + str(number1) +"\\n its working\",\r\n  \"phone\": \"" +(number) + "\"\r\n}"
@@ -59,10 +72,153 @@ def firstMsg(name,number,number1):
     return
 
 
+def firstMsg(name,number):
+    url = "https://api.chat-api.com/instance294124/sendMessage?token=bfllgpii7xqb42zq"
+
+    payload="{\r\n  \"body\": \"Hi " + str(name.title()) + "\\nYou registered for the interactive session with Drivekraft and here we are as promised \xF0\x9F\x98\x83 . \\n\\nIt's great that you are ready to talk and remember it's never too late.\",\r\n  \"phone\": \"" +(number) + "\"\r\n}"
+    headers = {
+            'Content-Type': 'application/json'
+            }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    print(response.text)
+    return
+    
+
+def sendLink(name,number):
+    
+    url = "https://api.chat-api.com/instance294124/sendLink?token=bfllgpii7xqb42zq"
+    
+    payload="{\r\n  \"body\": \"https://forms.gle/dFdsNJMErDgeauWy5\",\r\n  \"previewBase64\": \"nn\",\r\n  \"title\": \"Follow up form\",\r\n  \"phone\": \"" +(number) + "\"\r\n}"
+    headers = {
+      'Content-Type': 'application/json'
+    }
+    
+    response = requests.request("POST", url, headers=headers, data=payload)
+    
+    print(response.text)
+    return
+
+
+def SecondMsg(name,number):
+    url = "https://api.chat-api.com/instance294124/sendMessage?token=bfllgpii7xqb42zq"
+    
+    payload="{\r\n  \"body\": \"Can you please this above form\xF0\x9F\x98\x83 \\n\\nThis will help to know more about you and assign you the best match of psychologist \xF0\x9F\x98\x87 \xF0\x9F\x98\x87 \\n\\nDo let me know once you filled the form , I will proceed with schedule it\",\r\n  \"phone\": \"" +(number) + "\"\r\n}"
+    headers = {
+      'Content-Type': 'application/json'
+    }
+    
+    response = requests.request("GET", url, headers=headers, data=payload)
+    
+    print(response.text)
+    return
+
+
+
+def isNew(number,email):
+
+    scope =["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
+    creds =ServiceAccountCredentials.from_json_keyfile_name("cred.json", scope)
+    client = gspread.authorize(creds)
+    spreadsheet = client.open("personal Dev").worksheet("Completed Session")
+    data = spreadsheet.get_all_values()
+    
+    values=data[1:]
+    
+    for entry in values:
+        if str(entry[2])==number or str(entry[3])==email:
+            return entry[5]
+
+
+    return True
+
+def isOnWhattsapp(number):
+
+    if str(number[0])=='+':
+        number = number[1:]
+        
+    if len(number)==10:
+        number='91'+ str(number)
+
+
+    try: 
+        url = "https://api.chat-api.com/instance294124/checkPhone?token=bfllgpii7xqb42zq&phone=" + str(number) 
+    
+        payload={}
+        headers = {}
+        
+        response = requests.request("GET", url, headers=headers, data=payload)
+        
+        
+        json_data = json.loads(response.text)['result']
+        
+        if json_data=='not exists':
+            return False
+    
+    
+        return True    
+        
+    except:
+        return False
+
+
+
+def send_Message(name,number):
+    
+    if str(number[0])=='+':
+        number = number[1:]
+        
+    if len(number)==10:
+        number='91'+ str(number)
+
+    if isOnWhattsapp(number)==False:
+        return False
+        
+    firstMsg(name,number)
+    sendLink(name,number)
+    SecondMsg(name,number)
+     
+    return
+        
+        
+
+def send_mail(name,reciever):
+
+    EMAIL_ADDRESS = "drivekraft@gmail.com"
+    EMAIL_PASSWORD = 'kxgudynwonausuqh'
+    
+    msg1="Hi " + str(name)+" \nYou registered for the interactive session with Drivekraft and here we are as promised 😃 .  \nIt's great that you are ready to talk and remember it's never too late."
+    
+    msg2="\n\n https://forms.gle/dFdsNJMErDgeauWy5"
+    
+    msg3="\n\nCan you please this above form😃  \nThis will help to know more about you and assign you the best match of psychologist 😇 😇  \n\nDo let us know once you filled the form , I will proceed with schedule it  "
+
+    msg = EmailMessage() 
+    msg['Subject'] = 'Greetings From Drivekraft!!'
+    msg['From'] = EMAIL_ADDRESS
+    msg['To'] = reciever
+
+    msg.set_content(msg1 + msg2  + msg3)
+
+    #msg.add_alternative(content(), subtype='html')
+
+
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+        smtp.send_message(msg)
+        print("hiii")
+
+
+    return    
+
+
+
+
 def intialGreetingProcess():
 
     #confihurations need to read from configurations.yaml file
-    with open("spreadsheetFunctions/configurations.yaml", "r") as ymlfile:
+    with open("configurations.yaml", "r") as ymlfile:
         cfg = yaml.load(ymlfile,Loader=yaml.FullLoader)
 
 
@@ -72,7 +228,7 @@ def intialGreetingProcess():
 
     #reading spreadsheet
     scope =["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
-    creds =ServiceAccountCredentials.from_json_keyfile_name("spreadsheetFunctions/cred.json", scope)
+    creds =ServiceAccountCredentials.from_json_keyfile_name("cred.json", scope)
     client = gspread.authorize(creds)
 
     #reading data from Google form 1 
@@ -115,7 +271,7 @@ def intialGreetingProcess():
                 print("message send")
                 status="msg send"
             else:
-                 send_mail(name,email) #to send mail if he is not on whattsapp
+                 #send_mail(name,email) #to send mail if he is not on whattsapp
                  print("mail  send") 
                  status="email send"  
             newComer='Yes'
@@ -146,7 +302,7 @@ def intialGreetingProcess():
         
     #updating last read in configuration file              
     cfg["gf1LastReadIndex"]= gf1LastReadIndex
-    with open('spreadsheetFunctions/configurations.yaml', 'w') as fp:
+    with open('configurations.yaml', 'w') as fp:
         yaml.dump(cfg, fp)
 
     return    

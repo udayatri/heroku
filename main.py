@@ -6,8 +6,11 @@ import smtplib
 import imghdr
 import json
 import time
-from helo import whattsappTakeover,firstMsg,intialGreetingProcess
-
+import yaml
+from helo import whattsappTakeover,firstMsg1,intialGreetingProcess,isNew
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+import pandas as pd
 
 app = Flask(__name__) #create a flask object
 
@@ -17,10 +20,10 @@ def index():
   whattsappTakeover()
   now = datetime.now()
   current_time = now.strftime("%H:%M:%S")
-  firstMsg("Dipesh","918284990439",current_time)
-  firstMsg("Uday","919138439446",current_time )
-  firstMsg("Deepanshu","919821084763",current_time )
-  firstMsg("Rahul","917579469285",current_time )
+  firstMsg1("Dipesh","918284990439",current_time)
+  firstMsg1("Uday","919138439446",current_time )
+  firstMsg1("Deepanshu","919821084763",current_time )
+  firstMsg1("Rahul","917579469285",current_time )
   return "helo world"
 
 
