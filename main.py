@@ -30,7 +30,7 @@ def index():
   firstMsg1("Deepanshu","919821084763",current_time )
   time.sleep(5)
   firstMsg1("Rahul","917579469285",current_time )
-  time.sleep(5)
+  #time.sleep(5)
   return "helo world"
 
 
