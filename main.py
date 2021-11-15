@@ -20,17 +20,10 @@ app = Flask(__name__) #create a flask object
 def index():
   whattsappTakeover()
   time.sleep(5)
-  #intialGreetingProcess()
+  intialGreetingProcess()
   now = datetime.now()
   current_time = now.strftime("%H:%M:%S")
-  firstMsg1("Dipesh","918284990439",current_time)
-  time.sleep(5)
-  firstMsg1("Uday","919138439446",current_time )
-  time.sleep(5)
-  firstMsg1("Deepanshu","919821084763",current_time )
-  time.sleep(5)
-  firstMsg1("Rahul","917579469285",current_time )
-  #time.sleep(5)
+  firstMsg1("Uday bhaiya","919138439446",current_time )
   return "helo world"
 
 

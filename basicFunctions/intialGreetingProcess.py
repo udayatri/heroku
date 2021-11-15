@@ -28,28 +28,28 @@ def intialGreetingProcess():
 
     #last index till GF1 was read    
     gf1LastReadIndex=cfg["gf1LastReadIndex"]
-    
+   
 
     #reading spreadsheet
     scope =["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
     creds =ServiceAccountCredentials.from_json_keyfile_name("cred.json", scope)
     client = gspread.authorize(creds)
 
-    #reading data from Google form 1 
-    gf1Spreadsheet = client.open("Dev Session Record CRM version").worksheet("GF1")
+    #reading data from Google form 1
+    gf1Spreadsheet = client.open("Session Record CRM version").worksheet("GF1")
     gf1Data = gf1Spreadsheet.get_all_values()
     gf1RemainingData=gf1Data[gf1LastReadIndex:]
     print(gf1RemainingData)
      
 
-    #reading data from stage 1 
-    st1Spreadsheet = client.open("Dev Session Record CRM version").worksheet("Stage 1")
+    #reading data from stage 1
+    st1Spreadsheet = client.open("Session Record CRM version").worksheet("Stage 1")
     st1Data = st1Spreadsheet.get_all_values()
     st1DataCurrentLength=len(st1Data)
 
 
     #reading  stage 2 data
-    st2Spreadsheet = client.open("Dev Session Record CRM version").worksheet("Stage 2")
+    st2Spreadsheet = client.open("Session Record CRM version").worksheet("Stage 2")
     st2Data = st2Spreadsheet.get_all_values()
     st2DataCurrentLength=len(st2Data)
 
@@ -71,12 +71,12 @@ def intialGreetingProcess():
         if(str(psychologistName)=='True'):
 
             if (isOnWhattsapp(number)): # to check if person is avaible on whattsapp
-                send_Message(name,number) 
+                send_Message(name,number)
                 print("message send")
                 status="msg send"
             else:
                  send_mail(name,email) #to send mail if he is not on whattsapp
-                 print("mail  send") 
+                 print("mail  send")
                  status="email send"  
             newComer='Yes'
 
@@ -85,11 +85,11 @@ def intialGreetingProcess():
             updateCells(st1Spreadsheet,st1DataCurrentLength+1,3, number)
             updateCells(st1Spreadsheet,st1DataCurrentLength+1,4, email)
             updateCells(st1Spreadsheet,st1DataCurrentLength+1,5, country)
-            updateCells(st1Spreadsheet,st1DataCurrentLength+1,7, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
-            updateCells(st1Spreadsheet,st1DataCurrentLength+1,6, status)        
-    
+            updateCells(st1Spreadsheet,st1DataCurrentLength+1,6, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
+            updateCells(st1Spreadsheet,st1DataCurrentLength+1,5, status)        
+   
             st1DataCurrentLength=st1DataCurrentLength+1
-            
+           
         else:
             updateCells(st2Spreadsheet,st2DataCurrentLength+1,1, timeStamp)
             updateCells(st2Spreadsheet,st2DataCurrentLength+1,2, name)
@@ -100,10 +100,10 @@ def intialGreetingProcess():
 
             st2DataCurrentLength= st2DataCurrentLength+1
 
-        
+       
         gf1LastReadIndex=gf1LastReadIndex+1
-        
-        
+       
+       
     #updating last read in configuration file              
     cfg["gf1LastReadIndex"]= gf1LastReadIndex
     with open('configurations.yaml', 'w') as fp:
