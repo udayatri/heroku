@@ -20,7 +20,7 @@ app = Flask(__name__) #create a flask object
 def index():
   whattsappTakeover()
   time.sleep(5)
-  intialGreetingProcess()
+  #intialGreetingProcess()
   now = datetime.now()
   current_time = now.strftime("%H:%M:%S")
   firstMsg1("Uday bhaiya","919138439446",current_time )
